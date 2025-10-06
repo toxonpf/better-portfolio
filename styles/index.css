@@ -1,0 +1,79 @@
+@font-face {
+    font-family: 'bebas';
+    src: url('../fonts/BebasNeue-Regular.ttf') format('truetype');
+
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'source Code';
+    src: url('../fonts/SourceCodePro-Regular.ttf') format('truetype');
+
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* html{
+    cursor: none;
+} */
+
+body {
+    background-color: #000;
+    color: white;
+
+    font-family: 'source Code', Arial, sans-serif;
+    font-size: clamp(14px, 2vw, 18px);
+}
+
+#cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    pointer-events: none;
+    opacity: 0;
+    display: none;
+
+    z-index: 100;
+
+    & img {
+        width: calc(2vw + 2vh / 2);
+    }
+}
+
+#openingBlock {
+    font-family: 'bebas';
+}
+
+#shot1 {
+    height: 100vh;
+
+    font-size: clamp(40px, 6vw, 600px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: clamp(40px, 20vh, 600px);
+
+    & form {
+        height: 20px;
+    }
+
+    & #shot1First {
+        box-shadow: 0px 0px 10px 10px #000;
+        z-index: 5;
+    }
+}
+
+
+#shot2{
+    position: absolute;
+    top: calc(-2vw +  -2vh / 2);
+    left: calc(50% - 3.5vw);
+    & img {
+        width: calc(2vw + 2vh / 2);
+        transform: rotate(-90deg);
+    }
+}
