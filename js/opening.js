@@ -98,13 +98,42 @@ tl
     .to('#shot4', {
         ease: CustomEase.create("custom", "M0,0 C0,0 0.028,0.215 0.045,0.276 0.051,0.299 0.061,0.326 0.07,0.34 0.076,0.351 0.07,0.356 0.1,0.375 0.25,0.472 0.71,0.543 0.875,0.612 0.907,0.626 0.906,0.626 0.915,0.634 0.925,0.644 0.939,0.67 0.945,0.683 0.952,0.699 0.96,0.729 0.965,0.751 0.977,0.807 1,1 1,1 "),
         duration: 1,
-        
+
         top: '102vh'
-    }, '<+=0.5');
+    }, '<+=0.5')
+    .call(() => {
+        function changeScale() {
+            const shot3 = document.querySelector("#shot3");
+            const navbar = document.querySelector("#navbar");
+            const line = document.querySelector('#line');
+            const state = Flip.getState(shot3);
+            shot3.appendChild(line);
+            line.style.transform = 'translateY(-8px)';
+            navbar.appendChild(shot3);
 
-const 
-    shot3 = document.querySelector('#shot3'),
-    navbar = document.querySelector('#navbar'),
-    state = Flip.getState(shot3);
+            const shotRect = shot3.getBoundingClientRect();
+            const navbarRect = navbar.getBoundingClientRect();
+            const side = Math.min(navbarRect.width, navbarRect.height);
 
-tl.add()
+            const scale = side / shotRect.width;
+
+            gsap.set(shot3, {
+                position: "absolute",
+                top: 0,
+                left: "50%",
+                xPercent: -50,
+                transformOrigin: "top center",
+                scale: scale,
+            });
+
+            // 5. Flip-анимация
+            Flip.from(state, {
+                duration: 1.2,
+                ease: "power2.inOut",
+                absolute: true,
+                scale: true,
+            });
+        }
+        changeScale()
+        window.addEventListener('resize', changeScale);
+    });
