@@ -81,10 +81,11 @@ body {
     z-index: 4;
 
     & img {
-        width: clamp(25px,
-                calc(2vw + 2vh / 2),
-                600px
-                );
+        width: clamp(
+            25px,
+            calc(2vw + 2vh / 2),
+            600px
+        );
         transform: 
             rotate(-90deg) 
             translateY(-50%)
