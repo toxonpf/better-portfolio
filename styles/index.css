@@ -73,11 +73,13 @@ body {
 }
 
 #shot2 {
+
     position: absolute;
     top: calc(-2vw + -2vh / 2);
     left: calc(50% - 2vw);
 
     mix-blend-mode: difference;
+    overflow: visible;
     z-index: 4;
 
     & img {
@@ -113,11 +115,11 @@ body {
 #line {
     background-color: #fff;
 
-    width: 0.7vw;
+    width: 0.5vw;
     height: calc(20vw + 1px);
 
     position: absolute;
-    left: calc(50% - 0.45vw);
+    left: calc(50% - 0.3vw);
     top: 104vh;
 
     z-index: 4;
