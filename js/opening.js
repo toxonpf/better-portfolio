@@ -1,4 +1,4 @@
-const slider = document.querySelector('#openingRange');
+import { backgroundStars } from './backgroundCanvas.js';
 
 // ANIMATIONS------------------------------
 
@@ -130,14 +130,14 @@ tl
         const navbar = document.querySelector("#navbar");
         const line = document.querySelector("#line");
         const state = Flip.getState(shot3);
-        
+
         function changeScale() {
 
             shot3.appendChild(line);
             line.style.transform = "translateY(-10px)";
             line.style.height = "110%";
             navbar.appendChild(shot3);
-            
+
             const baseSize = window.innerWidth * 0.2; // вычисляем 20vw в пикселях
             const navbarRect = navbar.getBoundingClientRect();
             const scaleY = navbarRect.height / baseSize;
@@ -172,4 +172,9 @@ tl
 
         const openingBlock = document.querySelector('#openingBlock');
         openingBlock.remove();
+
+        const stars = backgroundStars({
+            fadeInDuration: 120,
+        });
+        stars.start();
     });

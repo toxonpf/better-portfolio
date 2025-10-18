@@ -24,7 +24,37 @@ body {
 
     font-family: 'source Code', Arial, sans-serif;
     font-size: clamp(14px, 2vw, 18px);
+    cursor: none;
 }
+
+/* canvas позади всех элементов, но не мешает указателю */
+#background {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* важна — чтобы на странице можно было кликать */
+    z-index: 0;
+    /* сделай ниже чем UI (nav и т.д.) */
+}
+
+/* Убедись что элементы-интерактивы выше canvas (z-index > 0) */
+#smoothWrapper,
+#smoothContent,
+#navbar {
+    position: relative;
+    z-index: 1;
+}
+
+/* Пример — любой DOM элемент с этим классом станет препятствием */
+.star-obstacle {
+    pointer-events: auto;
+    /* они по-прежнему должны принимать события, если нужно */
+    z-index: 1;
+}
+
 
 #cursor {
     position: fixed;
@@ -33,10 +63,10 @@ body {
 
     pointer-events: none;
     opacity: 0;
-    display: none;
 
     z-index: 100;
     mix-blend-mode: difference;
+    user-select: none;
 
     & img {
         width: calc(2vw + 2vh / 2);
@@ -48,7 +78,7 @@ body {
     user-select: none;
 }
 
-#navbar{
+#navbar {
     width: 100vw;
     height: 70px;
 
@@ -83,15 +113,11 @@ body {
     z-index: 4;
 
     & img {
-        width: clamp(
-            25px,
-            calc(2vw + 2vh / 2),
-            600px
-        );
-        transform: 
-            rotate(-90deg) 
-            translateY(-50%)
-        ;
+        width: clamp(25px,
+                calc(2vw + 2vh / 2),
+                600px);
+        transform:
+            rotate(-90deg) translateY(-50%);
     }
 }
 
