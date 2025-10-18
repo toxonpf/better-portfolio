@@ -129,9 +129,9 @@ tl
         const shot3 = document.querySelector("#shot3");
         const navbar = document.querySelector("#navbar");
         const line = document.querySelector("#line");
-
+        const state = Flip.getState(shot3);
+        
         function changeScale() {
-            const state = Flip.getState(shot3);
 
             shot3.appendChild(line);
             line.style.transform = "translateY(-10px)";
@@ -154,20 +154,20 @@ tl
                 scaleY: scaleY,
             });
 
-            Flip.from(state, {
-                duration: 1.2,
-                ease: "expo.inOut",
-                absolute: true,
-                scale: true,
-                onComplete: () => {
-                    navbar.style.display = "flex";
-                    navbar.style.alignItems = "center";
-                    navbar.style.justifyContent = "center";
-                },
-            });
         }
-
         changeScale();
+        Flip.from(state, {
+            duration: 1.2,
+            ease: "expo.inOut",
+            absolute: true,
+            scale: true,
+            onComplete: () => {
+                navbar.style.display = "flex";
+                navbar.style.alignItems = "center";
+                navbar.style.justifyContent = "center";
+            },
+        });
+
         window.addEventListener("resize", changeScale);
 
         const openingBlock = document.querySelector('#openingBlock');
