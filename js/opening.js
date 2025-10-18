@@ -125,6 +125,9 @@ tl
         transformOrigin: "center center",
         ease: CustomEase.create("custom", "M0,0 C0,0 0.028,0.215 0.045,0.276 0.051,0.299 0.061,0.326 0.07,0.34 0.076,0.351 0.07,0.356 0.1,0.375 0.25,0.472 0.71,0.543 0.875,0.612 0.907,0.626 0.906,0.626 0.915,0.634 0.925,0.644 0.939,0.67 0.945,0.683 0.952,0.699 0.96,0.729 0.965,0.751 0.977,0.807 1,1 1,1 ")
     }, '<+=0.5')
+    .to('#cursor', {
+        
+    })
     .call(() => { // перенос лого в navbar
         const shot3 = document.querySelector("#shot3");
         const navbar = document.querySelector("#navbar");

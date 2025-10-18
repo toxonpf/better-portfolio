@@ -25,7 +25,10 @@
 
 <body>
     <canvas id="background"></canvas>
-    <div id="cursor"><img src="img/cursor.svg" alt=">"></div>
+    <div id="cursor">
+        <img src="img/cursor.svg" alt=">">
+        <div id="sircCursor"></div>
+    </div>
     <div id="smoothWrapper">
         <div id="smoothContent">
             <div id="navbar"></div>
@@ -43,10 +46,17 @@
                 </div>
                 <div id="shot3"></div>
             </div>
+            <main>
+                <div class="sitePart" id="sitePart1">
+                    <div id="leftMain">
+                        <h1>Hello</h1>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
     <script type="module" src="js/main.js"></script>
-    
+
     <script type="module" src="js/cursor.js"></script>
     <script type="module" src="js/opening.js"></script>
 </body>

@@ -99,3 +99,19 @@ $(document).ready(function () {
         $circle.css('opacity', '0');
     });
 });
+
+const targetClass = 'hoverer';
+const elementToScale = document.querySelector('#sircCursor');
+
+document.addEventListener('mousemove', (e) => {
+    // Получаем элемент под курсором
+    const elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+
+    if (elemBelow && elemBelow.classList.contains(targetClass)) {
+        elementToScale.style.transform = 'scale(1)';
+    } else {
+        elementToScale.style.transform = 'scale(0)';
+    }
+    console.log(elemBelow);
+    
+});
