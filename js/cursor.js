@@ -1,5 +1,7 @@
+// ---------------- Курсор ----------------
+
 const circleElement = document.querySelector("#cursor");
-const cursorImg = circleElement.querySelector('img');
+const cursorImg = circleElement.querySelector("img");
 
 let offsetX = 0;
 let offsetY = 0;
@@ -10,20 +12,18 @@ function updateOffsets() {
     offsetY = circleRect.height / 2;
 }
 
-// После загрузки изображения обновляем смещения
 if (cursorImg && !cursorImg.complete) {
     cursorImg.onload = updateOffsets;
 } else {
     updateOffsets();
 }
 
-// Получаем размеры окна
 const windowHeight = window.innerHeight;
 
-// Ставим мышь и круг в левый центр
 const mouse = { x: 0, y: windowHeight / 2 };
 const previounsMouse = { x: 0, y: windowHeight / 2 };
 const circle = { x: 0, y: windowHeight / 2 };
+
 let currentScale = 0;
 let currentAngle = 0;
 let lastAngle = 0;
@@ -35,11 +35,10 @@ window.addEventListener("mousemove", (e) => {
 
 const speed = 0.17;
 
-const tick = () => {
+const cursorTick = () => {
     circle.x += (mouse.x - circle.x) * speed;
     circle.y += (mouse.y - circle.y) * speed;
 
-    // Центрируем курсор
     const translateTransform = `translate(${circle.x - offsetX}px, ${circle.y - offsetY}px)`;
 
     const deltaMouseX = mouse.x - previounsMouse.x;
@@ -47,7 +46,6 @@ const tick = () => {
     previounsMouse.x = mouse.x;
     previounsMouse.y = mouse.y;
 
-    // Сжатие
     const mouseVelocity = Math.min(
         Math.sqrt(deltaMouseX ** 2 + deltaMouseY ** 2) * 5,
         150
@@ -57,14 +55,11 @@ const tick = () => {
     currentScale += (scaleValue - currentScale) * speed;
     const sclaeTransform = `scale(${1 + currentScale}, ${1 - currentScale})`;
 
-    // Поворот
     let angle = currentAngle;
-
     if (deltaMouseX !== 0 || deltaMouseY !== 0) {
         angle = (Math.atan2(deltaMouseY, deltaMouseX) * 180) / Math.PI;
     }
 
-    // Плавный переход угла
     let deltaAngle = angle - lastAngle;
     deltaAngle = ((deltaAngle + 180) % 360) - 180;
     lastAngle += deltaAngle * speed;
@@ -74,44 +69,83 @@ const tick = () => {
 
     circleElement.style.transform = `${translateTransform} ${rotationTransform} ${sclaeTransform}`;
 
-    window.requestAnimationFrame(tick);
+    requestAnimationFrame(cursorTick);
 };
-tick();
-circleElement.style.opacity = '1';
 
-// jQuery-часть: исправьте селектор на #cursor
+window.cursorTick = cursorTick;
+circleElement.style.opacity = "1";
+
+// ---------------- Поведение при уходе ----------------
+
 $(document).ready(function () {
-    const $circle = $('#cursor');
+    const $circle = $("#cursor");
 
-    $(document).on('mouseleave', function () {
-        $circle.css('opacity', '0');
+    $(document).on("mouseleave", function () {
+        $circle.css("opacity", "0");
     });
 
-    $(document).on('mouseenter', function () {
-        $circle.css('opacity', '1');
+    $(document).on("mouseenter", function () {
+        $circle.css("opacity", "1");
     });
 
-    $('iframe').on('mouseleave', function () {
-        $circle.css('opacity', '1');
+    $("iframe").on("mouseleave", function () {
+        $circle.css("opacity", "1");
     });
 
-    $('iframe').on('mouseenter', function () {
-        $circle.css('opacity', '0');
+    $("iframe").on("mouseenter", function () {
+        $circle.css("opacity", "0");
     });
 });
 
-const targetClass = 'hoverer';
-const elementToScale = document.querySelector('#sircCursor');
+// ---------------- Hover-поведение ----------------
 
-document.addEventListener('mousemove', (e) => {
-    // Получаем элемент под курсором
+const elementToScale = document.querySelector("#sircCursor");
+const hoverTest = document.querySelector("#hoverTest");
+
+// Проверяем, имеет ли элемент стиль cursor:pointer
+function hasPointerCursor(elem) {
+    if (!elem || elem === document.body) return false;
+    const computed = window.getComputedStyle(elem);
+    return computed.cursor === "pointer";
+}
+
+// Проверяем, имеет ли элемент нужный класс или pointer-курсор
+function isInteractiveElement(elem) {
+    return (
+        (elem && elem.classList && elem.classList.contains("cursorPointer")) ||
+        hasPointerCursor(elem)
+    );
+}
+
+// Плавное движение hoverTest
+let hoverPos = { x: 0, y: 0 };
+let targetPos = { x: 0, y: 0 };
+const hoverSpeed = 0.2;
+const showOffsetX = 20;
+const showOffsetY = 20;
+
+function updateHoverPosition() {
+    hoverPos.x += (targetPos.x - hoverPos.x) * hoverSpeed;
+    hoverPos.y += (targetPos.y - hoverPos.y) * hoverSpeed;
+
+    hoverTest.style.transform = `translate(${hoverPos.x}px, ${hoverPos.y}px)`;
+    requestAnimationFrame(updateHoverPosition);
+}
+
+updateHoverPosition();
+
+document.addEventListener("mousemove", (e) => {
     const elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+    const isTarget = isInteractiveElement(elemBelow);
 
-    if (elemBelow && elemBelow.classList.contains(targetClass)) {
-        elementToScale.style.transform = 'scale(1)';
+    targetPos.x = e.clientX + showOffsetX;
+    targetPos.y = e.clientY + showOffsetY;
+
+    if (isTarget) {
+        elementToScale.style.transform = "scale(1)";
+        hoverTest.style.opacity = "1";
     } else {
-        elementToScale.style.transform = 'scale(0)';
+        elementToScale.style.transform = "scale(0)";
+        hoverTest.style.opacity = "0";
     }
-    console.log(elemBelow);
-    
 });

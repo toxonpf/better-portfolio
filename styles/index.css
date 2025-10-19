@@ -23,7 +23,16 @@ body {
     color: white;
 
     font-family: 'source Code', Arial, sans-serif;
-    font-size: clamp(14px, 2vw, 18px);
+    font-size: clamp(
+        14px, 
+        2vw, 
+        18px
+    );
+}
+
+h2 {
+    font-family: bebas;
+    font-size: 7vh;
 }
 
 /* canvas позади всех элементов, но не мешает указателю */
@@ -36,7 +45,7 @@ body {
     top: 0;
 
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
 }
 
 .star-obstacle {
@@ -54,10 +63,13 @@ body {
     opacity: 0;
 
     z-index: 100;
+    overflow: hidden;
     mix-blend-mode: difference;
     user-select: none;
 
-    transition: all 0.01s;
+
+    transition: opacity 0.2s;
+    transform: translate(-10vw, -10vh);
 
     img {
         width: calc(2vw + 2vh / 2);
@@ -71,24 +83,59 @@ body {
         position: absolute;
         top: 0px;
         transition: all 0.2s;
+        pointer-events: none;
+
     }
 }
 
+#hoverTest {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    mix-blend-mode: difference;
+}
+
+
+#cursor,
+#cursor * {
+    pointer-events: none !important;
+}
+
+
 #openingBlock {
+    width: 100vw;
+
+    background-color: #000;
+
     font-family: 'bebas';
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    z-index: 1000;
     user-select: none;
 }
 
 #navbar {
     background-color: #00000099;
 
-    width: 100vw;
-    height: 70px;
+    width: 100%;
+    height: 0px;
 
     position: sticky;
     top: 0px;
 
     backdrop-filter: blur(5px);
+    z-index: 50;
 }
 
 #shot1 {
@@ -118,9 +165,11 @@ body {
     z-index: 4;
 
     & img {
-        width: clamp(25px,
-                calc(2vw + 2vh / 2),
-                600px);
+        width: clamp(
+            25px,
+            calc(2vw + 2vh / 2),
+            600px
+        );
         transform:
             rotate(-90deg) translateY(-50%);
     }
@@ -186,17 +235,69 @@ main {
 }
 
 .sitePart {
-    width: clamp(200px,
-            80vw,
-            2160px);
+    width: clamp(
+        200px,
+        80vw, 
+        2160px
+    );
 }
 
 #sitePart1 {
-    padding-top: 20vh;
+    width: 150vw;
+    height: 100vh;
+
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-top: 0vh;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+
+    transition: height 0.5s;
 
     & h1 {
-        font-family: bebas;
+        padding-top: 80px;
+
+        font-size: 20vw;
+        font-family: 'bebas';
         letter-spacing: 0.1rem;
         font-weight: 100;
+
+        white-space: nowrap;
+        margin: 0;
+        display: inline-block;
+        white-space: pre;
+        line-height: 1;
+        will-change: transform;
+
+        -webkit-text-stroke: 2px white;
     }
+
+    & h3 {
+        font-weight: 100;
+    }
+
+    & .labelChar {
+        display: inline-block;
+        vertical-align: middle;
+        mix-blend-mode: difference;
+    }
+}
+
+#scrollArrow {
+    position: absolute;
+    bottom: -5vh;
+
+    img {
+        width: calc(2vw + 2vh);
+        rotate: 90deg;
+        transform: translate(50%, 0%);
+    }
+}
+
+.star-obstacle {
+    position: absolute;
+    pointer-events: none;
 }

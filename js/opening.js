@@ -2,8 +2,6 @@ import { backgroundStars } from './backgroundCanvas.js';
 
 // ANIMATIONS------------------------------
 
-gsap.registerPlugin(SplitText);
-
 let shot1 = SplitText.create('#shot1 div', {
     type: 'chars, words, lines',
     wordsClass: 'chars',
@@ -126,13 +124,18 @@ tl
         ease: CustomEase.create("custom", "M0,0 C0,0 0.028,0.215 0.045,0.276 0.051,0.299 0.061,0.326 0.07,0.34 0.076,0.351 0.07,0.356 0.1,0.375 0.25,0.472 0.71,0.543 0.875,0.612 0.907,0.626 0.906,0.626 0.915,0.634 0.925,0.644 0.939,0.67 0.945,0.683 0.952,0.699 0.96,0.729 0.965,0.751 0.977,0.807 1,1 1,1 ")
     }, '<+=0.5')
     .to('#cursor', {
-        
+
     })
     .call(() => { // перенос лого в navbar
         const shot3 = document.querySelector("#shot3");
         const navbar = document.querySelector("#navbar");
         const line = document.querySelector("#line");
         const state = Flip.getState(shot3);
+
+        navbar.style.height = '70px';
+        navbar.style.padding = '10px 0px';
+        shot3.style.margin = '5px';
+
 
         function changeScale() {
 
@@ -143,7 +146,7 @@ tl
 
             const baseSize = window.innerWidth * 0.2; // вычисляем 20vw в пикселях
             const navbarRect = navbar.getBoundingClientRect();
-            const scaleY = navbarRect.height / baseSize;
+            const scaleY = (navbarRect.height - 20) / baseSize;
 
             gsap.set(shot3, {
                 position: "absolute",
@@ -172,12 +175,120 @@ tl
         });
 
         window.addEventListener("resize", changeScale);
-
+    })
+    .call(() => { // удаляем блок опенинга
         const openingBlock = document.querySelector('#openingBlock');
         openingBlock.remove();
-
+    })
+    .call(() => { // запускаем скрипт анимации фона
         const stars = backgroundStars({
             fadeInDuration: 120,
         });
         stars.start();
-    });
+    })
+    .call(() => { // запускаем анимацию курсора
+        cursorTick();
+    })
+    .call(() => { // анимация лейбла
+        let shot1 = new SplitText('#sitePart1 h1', {
+            type: 'chars, words, lines',
+            charsClass: 'labelChar',
+
+        });
+
+        gsap.set(shot1.chars, { y: 100, opacity: 0 });
+
+        gsap.to(shot1.chars, {
+            y: 0,
+            opacity: 1,
+            ease: "expo.out",
+            stagger: 0.03,
+            scrollTrigger: {
+                trigger: "#sitePart1",
+                toggleActions: "play none none none"
+            }
+        });
+    })
+    .call(() => { // анимация стрелки пролистывания
+        const scrollArrow = document.querySelector('#scrollArrow');
+
+        window.addEventListener('scroll', () => {
+            gsap.to('#scrollArrow', {
+                ease: 'expo.out',
+                duration: 1,
+
+                bottom: '50vh',
+                opacity: 0,
+
+                onComplete: () => {
+                    scrollArrow.classList.remove("star-obstacle")
+                }
+            })
+        });
+
+        gsap.to('#scrollArrow', {
+            bottom: '5vh'
+        })
+    })
+    .call(() => { // анимация второго заготовка
+        let sitePart1h2 = new SplitText('#sitePart1 h2', {
+            type: 'chars, words, lines',
+            charsClass: 'labelChar',
+        });
+
+        // Анимация появления слов
+        tl.fromTo(sitePart1h2.words, {
+            yPercent: 100,
+            opacity: 0
+        }, {
+            stagger: {
+                from: 'start',
+                each: 0.05
+            },
+            yPercent: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "power3.out",
+            onComplete: () => {
+                const chars = sitePart1h2.words;
+                const strength = 20;
+                const damp = 1;
+
+                const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+                window.addEventListener('mousemove', e => {
+                    mouse.x = e.clientX;
+                    mouse.y = e.clientY;
+                });
+
+                function tick() {
+                    chars.forEach((char) => {
+                        const rect = char.getBoundingClientRect();
+                        const cx = rect.left + rect.width / 2;
+                        const cy = rect.top + rect.height / 2;
+
+                        const dx = mouse.x - cx;
+                        const dy = mouse.y - cy;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        // сила ослабляется по мере удаления
+                        const pull = Math.max(0, (1 - dist / 400));
+
+                        const moveX = dx * pull * (strength / 200);
+                        const moveY = dy * pull * (strength / 200);
+
+                        gsap.to(char, {
+                            x: moveX,
+                            y: moveY,
+                            duration: damp,
+                            ease: "power2.out"
+                        });
+                    });
+
+                    requestAnimationFrame(tick);
+                }
+
+                tick();
+            }
+        });
+    })

@@ -21,8 +21,8 @@ export function backgroundStars(config = {}) {
         drift: 0.05,             // Случайный дрейф
         drag: 0.97,              // Замедление
         attractForce: 0.01,       // Сила притяжения к курсору
-        repelForce: 0.01,         // Сила отталкивания от препятствий
-        repelRadius: 10,        // Радиус отталкивания от препятствий
+        repelForce: 0.1,         // Сила отталкивания от препятствий
+        repelRadius: 300,        // Радиус отталкивания от препятствий
         sizeMin: 0.2,            // Минимальный размер звезды
         sizeMax: 1.5,            // Максимальный размер звезды
         scrollBoost: -0.6,       // Влияние прокрутки
@@ -92,9 +92,11 @@ export function backgroundStars(config = {}) {
             });
         });
     }
-    updateObstacles();
-    const mo = new MutationObserver(() => updateObstacles());
-    mo.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('scroll', () => {
+        updateObstacles();
+        const mo = new MutationObserver(() => updateObstacles());
+        mo.observe(document.body, { childList: true, subtree: true });
+    });
 
     // ------------------ ПОСТЕПЕННОЕ СОЗДАНИЕ ------------------
     function spawnStep() {
