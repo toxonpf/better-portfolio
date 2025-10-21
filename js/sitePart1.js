@@ -1,4 +1,4 @@
-gsap.registerPlugin(SplitText);
+// h1 -----------------------------
 
 let shot1 = new SplitText('#sitePart1 h1', {
     type: 'chars',
@@ -145,3 +145,6 @@ function randomLetterAnimation() {
 }
 
 randomLetterAnimation();
+
+// lorem -------------------------
+
