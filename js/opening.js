@@ -221,7 +221,7 @@ tl
                 opacity: 0,
 
                 onComplete: () => {
-                    scrollArrow.classList.remove("star-obstacle")
+                    scrollArrow.remove();
                 }
             })
         });
