@@ -256,7 +256,7 @@ const setupSitePart1Subtitle = () => {
                     const dx = mouse.x - cx;
                     const dy = mouse.y - cy;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-
+                    
                     const pull = Math.max(0, (1 - dist / 400));
 
                     const moveX = dx * pull * (strength / 200);
