@@ -21,13 +21,10 @@ html {
 body {
     background-color: #000;
     color: white;
-
     font-family: 'source Code', Arial, sans-serif;
-    font-size: clamp(
-        14px, 
-        2vw, 
-        18px
-    );
+    font-size: clamp(14px, 2vw, 18px);
+
+    overflow-y: hidden;
 }
 
 h2 {
@@ -53,23 +50,21 @@ h2 {
     z-index: 1;
 }
 
-
 #cursor {
+    opacity: 0;
+    mix-blend-mode: difference;
+
     position: fixed;
     left: 0;
     top: 0;
 
-    pointer-events: none;
-    opacity: 0;
-
-    z-index: 100;
-    overflow: hidden;
-    mix-blend-mode: difference;
-    user-select: none;
-
-
     transition: opacity 0.2s;
     transform: translate(-10vw, -10vh);
+
+    pointer-events: none;
+    z-index: 100;
+    overflow: hidden;
+    user-select: none;
 
     img {
         width: calc(2vw + 2vh / 2);
@@ -89,26 +84,30 @@ h2 {
 }
 
 #hoverTest {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+    display: none;
+
+
     color: white;
     font-size: 16px;
     font-weight: 500;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    transition: opacity 0.2s ease;
     transform: translate(-50%, -50%);
+
     z-index: 9999;
     mix-blend-mode: difference;
+    pointer-events: none;
+    opacity: 0;
 }
-
 
 #cursor,
 #cursor * {
     pointer-events: none !important;
 }
-
 
 #openingBlock {
     width: 100vw;
@@ -165,11 +164,9 @@ h2 {
     z-index: 4;
 
     & img {
-        width: clamp(
-            25px,
-            calc(2vw + 2vh / 2),
-            600px
-        );
+        width: clamp(25px,
+                calc(2vw + 2vh / 2),
+                600px);
         transform:
             rotate(-90deg) translateY(-50%);
     }
@@ -235,11 +232,7 @@ main {
 }
 
 .sitePart {
-    width: clamp(
-        200px,
-        80vw, 
-        2160px
-    );
+    width: clamp(200px, 80vw, 2160px);
 }
 
 #sitePart1 {

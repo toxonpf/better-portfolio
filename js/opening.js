@@ -1,7 +1,12 @@
 import { backgroundStars } from './backgroundCanvas.js';
-const OPENING_STORAGE_KEY = 'openingLastPlayedAt';
-const OPENING_COOLDOWN_MS = 5 * 60 * 1000;
 
+// Фиксируем время последнего показа интро, чтобы решить, когда проигрывать.
+// EN: Store the last opening play time to decide when to play the intro.
+const OPENING_STORAGE_KEY = 'openingLastPlayedAt';
+const OPENING_COOLDOWN_MS = 5 * 60 * 1000; // 5 минут
+
+// Флаги для ленивой инициализации (чтобы запускать один раз).
+// EN: Lazy flags for one-time initializations.
 let backgroundInstance;
 let cursorStarted = false;
 let hoverTestShown = false;
@@ -16,6 +21,8 @@ const getLastOpeningPlay = () => {
     return Number.isFinite(parsed) ? parsed : null;
 };
 
+// Хелперы для чтения/записи/очистки отметки времени.
+// EN: Helpers to read/write/clear the timestamp marker.
 const setLastOpeningPlay = (timestamp = Date.now()) => localStorage.setItem(OPENING_STORAGE_KEY, String(timestamp));
 const clearLastOpeningPlay = () => localStorage.removeItem(OPENING_STORAGE_KEY);
 
@@ -25,6 +32,8 @@ const shouldPlayOpening = () => {
     return Date.now() - lastPlay >= OPENING_COOLDOWN_MS;
 };
 
+// Показ подсказки, если ещё не показывали.
+// EN: Show the hover hint if it hasn't been shown yet.
 const showHoverTest = () => {
     if (hoverTestShown) return;
     const hoverTest = document.querySelector('#hoverTest');
@@ -34,11 +43,15 @@ const showHoverTest = () => {
     }
 };
 
+// Удаляем блок открытия из DOM.
+// EN: Remove the opening block from the DOM.
 const removeOpeningBlock = () => {
     const openingBlock = document.querySelector('#openingBlock');
     if (openingBlock) openingBlock.remove();
 };
 
+// Запуск звёздного фона (если не запущен).
+// EN: Start the background stars instance (if not started).
 const startBackground = () => {
     if (backgroundInstance) return;
     backgroundInstance = backgroundStars({
@@ -47,6 +60,8 @@ const startBackground = () => {
     backgroundInstance.start();
 };
 
+// Запуск пользовательского курсора (если доступен и ещё не запущен).
+// EN: Start the custom cursor (if available and not started).
 const startCursor = () => {
     if (cursorStarted) return;
     if (typeof cursorTick === 'function') {
@@ -55,10 +70,14 @@ const startCursor = () => {
     }
 };
 
+// Включаем вертикальную прокрутку страницы (после интро).
+// EN: Enable body vertical scroll (after intro finishes).
 const enableBodyScroll = () => {
     document.body.style.overflowY = "scroll";
 };
 
+// Перемещаем `shot3/line` в navbar и масштабируем (опционально с Flip).
+// EN: Re-home `shot3/line` into the navbar and scale it (optionally with Flip animation).
 const setupNavbar = (withAnimation = true) => {
     if (navbarInitialized && !withAnimation) return;
 
@@ -74,16 +93,18 @@ const setupNavbar = (withAnimation = true) => {
     navbar.style.padding = '10px 0px';
     shot3.style.margin = '5px';
 
+    // Перемещаем линию в shot3 и масштабируем её внутри navbar.
+    // EN: Move `line` into `shot3` and scale it to fit the navbar.
     const changeScale = () => {
         shot3.appendChild(line);
-         line.style.position = "absolute";
+        line.style.position = "absolute";
         line.style.top = "50%";
         line.style.left = "50%";
         line.style.transform = "translate(-50%, -50%) translateY(-10px)";
         line.style.height = "110%";
         line.style.display = "block";
         line.style.visibility = "visible";
-       navbar.appendChild(shot3);
+        navbar.appendChild(shot3);
 
         const baseSize = window.innerWidth * 0.2;
         const navbarRect = navbar.getBoundingClientRect();
@@ -129,6 +150,8 @@ const setupNavbar = (withAnimation = true) => {
     navbarInitialized = true;
 };
 
+// Инициализация заголовка первой секции: разбивка на символы и анимация при скролле.
+// EN: Initialize the sitePart1 title: split into chars and animate on scroll.
 const setupSitePart1Title = () => {
     if (sitePart1TitleInitialized) return;
 
@@ -154,6 +177,8 @@ const setupSitePart1Title = () => {
     sitePart1TitleInitialized = true;
 };
 
+// Стрелка прокрутки: показываем, затем скрываем при скролле.
+// EN: Scroll arrow: show it and hide when the user scrolls.
 const setupScrollArrow = () => {
     if (scrollArrowInitialized) return;
 
@@ -184,7 +209,9 @@ const setupScrollArrow = () => {
     scrollArrowInitialized = true;
 };
 
-const setupSitePart1Subtitle  = ()  => {
+// Подзаголовок: появляется с анимацией, затем реагирует на движение мыши.
+// EN: Subtitle: animates in and then reacts to mouse movement.
+const setupSitePart1Subtitle = () => {
     if (sitePart1SubtitleInitialized) return;
 
     let sitePart1h2 = new SplitText('#sitePart1 h2', {
@@ -218,6 +245,8 @@ const setupSitePart1Subtitle  = ()  => {
                 mouse.y = e.clientY;
             });
 
+            // Простейший тик для смещения слов в зависимости от позиции мыши.
+            // EN: Simple tick that shifts words based on mouse position.
             function tick() {
                 chars.forEach((char) => {
                     const rect = char.getBoundingClientRect();
@@ -227,7 +256,8 @@ const setupSitePart1Subtitle  = ()  => {
                     const dx = mouse.x - cx;
                     const dy = mouse.y - cy;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                     const pull = Math.max(0, (1 - dist / 400));
+
+                    const pull = Math.max(0, (1 - dist / 400));
 
                     const moveX = dx * pull * (strength / 200);
                     const moveY = dy * pull * (strength / 200);
@@ -249,6 +279,8 @@ const setupSitePart1Subtitle  = ()  => {
     sitePart1SubtitleInitialized = true;
 };
 
+// Быстрое завершение, если пропускаем анимацию открытия.
+// EN: Finalize without running the opening animation (skip intro).
 const finalizeWithoutOpeningAnimation = () => {
     setupNavbar(false);
     showHoverTest();
@@ -263,7 +295,11 @@ const finalizeWithoutOpeningAnimation = () => {
 
 let openingTimeline;
 
+// Полный таймлайн интро; onStart ставит отметку последнего проигрыша.
+// EN: Full intro timeline; onStart stamps the last-play timestamp.
 const createOpeningTimeline = () => {
+    // Разбиваем `#shot1 div` на символы перед анимацией.
+    // EN: Split `#shot1 div` into characters before animation.
     let shot1 = SplitText.create('#shot1 div', {
         type: 'chars, words, lines',
         wordsClass: 'chars',
@@ -274,6 +310,8 @@ const createOpeningTimeline = () => {
         onStart: () => setLastOpeningPlay()
     });
 
+    // Оригинальная последовательность пролога.
+    // EN: Original prologue animation sequence.
     tl
         .from(shot1.chars, {
             delay: 0.3,
@@ -390,6 +428,8 @@ const createOpeningTimeline = () => {
         .to('#cursor', {
 
         })
+        // После пролога: переставляем узлы и включаем основной контент.
+        // EN: After the prologue: rearrange nodes and enable main content.
         .call(() => setupNavbar(true))
         .call(showHoverTest)
         .call(removeOpeningBlock)
@@ -409,19 +449,9 @@ if (shouldPlayOpening()) {
     finalizeWithoutOpeningAnimation();
 }
 
+// Утилита в консоли: сбрасывает cooldown и перезагружает страницу, чтобы принудительно показать интро.
+// EN: Console helper: clear the cooldown and reload to force the intro.
 window.resetOpeningAnimation = () => {
     clearLastOpeningPlay();
     location.reload();
 };
-           y: moveY,
-                            duration: damp,
-                            ease: "power2.out"
-                        });
-                    });
-
-                    requestAnimationFrame(tick);
-                }
-                tick();
-            }
-        });
-    })
