@@ -36,6 +36,7 @@ export function backgroundStars(config = {}) {
     const stars = [];
     const obstacles = [];
     const mouse = { x: -9999, y: -9999 };
+    let cursorActive = false;
     let animId = null;
     let scrollVelocity = 0;
 
@@ -48,11 +49,24 @@ export function backgroundStars(config = {}) {
     window.addEventListener('resize', () => { fitCanvas(); updateObstacles(); });
 
     // ------------------ МЫШЬ ------------------
+    const deactivateCursor = () => {
+        mouse.x = -9999;
+        mouse.y = -9999;
+        cursorActive = false;
+    };
+
     window.addEventListener('mousemove', e => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
+        cursorActive = true;
     });
-    window.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+    window.addEventListener('mouseenter', () => { cursorActive = true; });
+    window.addEventListener('mouseleave', deactivateCursor);
+    window.addEventListener('mouseout', (e) => {
+        // relatedTarget === null -> left the window; avoid sticky attraction point
+        if (!e.relatedTarget) deactivateCursor();
+    });
+    window.addEventListener('blur', deactivateCursor);
 
     // ------------------ СКРОЛЛ ------------------
     let lastScrollY = window.scrollY;
@@ -92,11 +106,11 @@ export function backgroundStars(config = {}) {
             });
         });
     }
-    window.addEventListener('scroll', () => {
-        updateObstacles();
-        const mo = new MutationObserver(() => updateObstacles());
-        mo.observe(document.body, { childList: true, subtree: true });
-    });
+    // Refresh obstacle positions regularly, not only on scroll.
+    window.addEventListener('scroll', updateObstacles);
+    const obstacleObserver = new MutationObserver(updateObstacles);
+    obstacleObserver.observe(document.body, { childList: true, subtree: true });
+    setInterval(updateObstacles, 100);
 
     // ------------------ ПОСТЕПЕННОЕ СОЗДАНИЕ ------------------
     function spawnStep() {
@@ -129,7 +143,7 @@ export function backgroundStars(config = {}) {
             const dx = mouse.x - s.x;
             const dy = mouse.y - s.y;
             const dist = Math.hypot(dx, dy);
-            if (dist < settings.mouseRadius) {
+            if (cursorActive && dist < settings.mouseRadius) {
                 const force = (1 - dist / settings.mouseRadius) * settings.attractForce;
                 s.vx += dx * force;
                 s.vy += dy * force;
