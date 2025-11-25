@@ -89,9 +89,9 @@ const setupNavbar = (withAnimation = true) => {
 
     const state = withAnimation ? Flip.getState(shot3) : null;
 
-    navbar.style.height = '60px';
-    navbar.style.padding = '10px 0px';
-    shot3.style.margin = '5px';
+    navbar.style.height = '70px';
+    navbar.style.padding = '20px 0px';
+    shot3.style.marginTop = '11px';
 
     // Перемещаем линию в shot3 и масштабируем её внутри navbar.
     // EN: Move `line` into `shot3` and scale it to fit the navbar.
@@ -101,25 +101,27 @@ const setupNavbar = (withAnimation = true) => {
         line.style.top = "50%";
         line.style.left = "50%";
         line.style.transform = "translate(-50%, -50%) translateY(-10px)";
-        line.style.height = "110%";
+        line.style.height = "150%";
         line.style.display = "block";
         line.style.visibility = "visible";
         navbar.appendChild(shot3);
 
         const baseSize = window.innerWidth * 0.2;
         const navbarRect = navbar.getBoundingClientRect();
-        const scaleY = (navbarRect.height - 20) / baseSize;
+        const shot3Rect = shot3.getBoundingClientRect();
+        const scaleY = (navbarRect.height - 30) / baseSize;
 
         gsap.set(shot3, {
             position: "absolute",
             top: 0,
-            left: "50%",
-            xPercent: -50,
+            left: `calc(100% - ${shot3Rect.width}px)`,
+            xPercent: 0,
             width: baseSize,
             height: baseSize,
-            transformOrigin: "top center",
+            transformOrigin: "top right",
             scaleX: scaleY,
             scaleY: scaleY,
+            backgroundColor: '#000'
         });
     };
 
