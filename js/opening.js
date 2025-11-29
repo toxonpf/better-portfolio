@@ -95,6 +95,8 @@ const setupNavbar = (withAnimation = true) => {
 
     // Перемещаем линию в shot3 и масштабируем её внутри navbar.
     // EN: Move `line` into `shot3` and scale it to fit the navbar.
+    const notifyNavbarSynced = () => window.dispatchEvent(new Event('navbar:shot3-ready'));
+
     const changeScale = () => {
         shot3.appendChild(line);
         line.style.position = "absolute";
@@ -123,6 +125,11 @@ const setupNavbar = (withAnimation = true) => {
             scaleY: scaleY,
             backgroundColor: '#000'
         });
+
+        // После первого прогона (когда Flip уже отработал) держим навигацию синхронизированной с новым положением shot3.
+        if (navbarInitialized) {
+            notifyNavbarSynced();
+        }
     };
 
     changeScale();
@@ -137,12 +144,14 @@ const setupNavbar = (withAnimation = true) => {
                 navbar.style.display = "flex";
                 navbar.style.alignItems = "center";
                 navbar.style.justifyContent = "center";
+                notifyNavbarSynced();
             },
         });
     } else {
         navbar.style.display = "flex";
         navbar.style.alignItems = "center";
         navbar.style.justifyContent = "center";
+        notifyNavbarSynced();
     }
 
     if (!navbarInitialized) {
@@ -186,6 +195,15 @@ const setupScrollArrow = () => {
 
     const scrollArrow = document.querySelector('#scrollArrow');
     if (!scrollArrow) return;
+
+    gsap.to('#scrollArrow', {
+        ease: 'expo.out',
+        duration: 1,
+        repeat: -1,
+        yoyo: true,
+
+        y: -15,
+    });
 
     const hideArrow = () => {
         gsap.to('#scrollArrow', {
@@ -258,7 +276,7 @@ const setupSitePart1Subtitle = () => {
                     const dx = mouse.x - cx;
                     const dy = mouse.y - cy;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    
+
                     const pull = Math.max(0, (1 - dist / 400));
 
                     const moveX = dx * pull * (strength / 200);

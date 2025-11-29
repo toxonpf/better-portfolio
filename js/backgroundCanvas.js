@@ -88,7 +88,8 @@ export function backgroundStars(config = {}) {
             radius: rand(settings.sizeMin, settings.sizeMax),
             opacity: 0,
             life: rand(4 * 60, 10 * 60),
-            age: 0
+            age: 0,
+            dying: false
         };
     }
 
@@ -128,15 +129,20 @@ export function backgroundStars(config = {}) {
             const s = stars[i];
             s.age++;
 
-            // Плавное появление/исчезновение
-            const lifePortion = s.age / s.life;
-            if (lifePortion < 0.2) s.opacity = Math.min(1, s.opacity + settings.fadeInSpeed);
-            else if (lifePortion > 0.85) s.opacity = Math.max(0, s.opacity - settings.fadeOutSpeed);
-            else s.opacity = 1;
+            if (s.dying) {
+                s.opacity = Math.max(0, s.opacity - settings.fadeOutSpeed);
+                if (s.opacity <= 0) {
+                    stars[i] = createStar();
+                    continue;
+                }
+            } else {
+                // Плавное появление/исчезновение
+                const lifePortion = s.age / s.life;
+                if (lifePortion < 0.2) s.opacity = Math.min(1, s.opacity + settings.fadeInSpeed);
+                else if (lifePortion > 0.85) s.opacity = Math.max(0, s.opacity - settings.fadeOutSpeed);
+                else s.opacity = 1;
 
-            if (s.age > s.life || (s.opacity <= 0 && s.age > s.life * 0.5)) {
-                stars[i] = createStar();
-                continue;
+                if (s.age >= s.life) s.dying = true;
             }
 
             // Притяжение к курсору

@@ -56,6 +56,9 @@ window.addEventListener('load', () => {
     window.addEventListener('resize', moveNavigateToShot3);
 });
 
+// После анимации opening.js переносит #shot3 в navbar, синхронизируем навигацию с новым положением.
+window.addEventListener('navbar:shot3-ready', moveNavigateToShot3);
+
 cacheNavOpenWidth();
 
 shot3.addEventListener('click', () => {

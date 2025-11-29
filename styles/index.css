@@ -337,6 +337,8 @@ main {
     position: absolute;
     bottom: -5vh;
 
+    pointer-events: auto;
+
     img {
         width: calc(2vw + 2vh);
         rotate: 90deg;
