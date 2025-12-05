@@ -475,3 +475,5 @@ window.resetOpeningAnimation = () => {
     clearLastOpeningPlay();
     location.reload();
 };
+
+
